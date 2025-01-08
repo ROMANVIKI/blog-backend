@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 from django.db import models
+from django.utils.text import slugify
 
 
 class CustomUserManager(BaseUserManager):
@@ -67,10 +68,16 @@ class CustomUser(AbstractBaseUser):
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, blank=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} by {self.author}"

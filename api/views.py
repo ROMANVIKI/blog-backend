@@ -33,7 +33,7 @@ class BlogCreateView(CreateAPIView):
 class UserListView(ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 class BlogListView(ListAPIView):
@@ -45,13 +45,14 @@ class BlogListView(ListAPIView):
 class RetrieveUserView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 class RetrieveBlogView(RetrieveAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [AllowAny]
+    lookup_field = "slug"
 
 
 class RetrieveEmailView(APIView):

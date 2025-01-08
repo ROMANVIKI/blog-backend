@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
-from .models import CustomUser
+from .models import CustomUser, BlogPost
 
 
 class UserCreationForm(forms.ModelForm):
@@ -76,3 +76,4 @@ class UserAdmin(BaseUserAdmin):
 # Register the CustomUser model and unregister the Group model.
 admin.site.register(CustomUser, UserAdmin)
 admin.site.unregister(Group)
+admin.site.register(BlogPost)
