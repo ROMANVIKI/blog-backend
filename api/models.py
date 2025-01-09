@@ -45,7 +45,8 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(default=timezone.now)
+    # updated = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
 
     objects = CustomUserManager()
 
@@ -91,3 +92,28 @@ class BlgoDraft(models.Model):
 
     def __str__(self):
         return f"Draft from {self.user} : Draft Title {self.title}"
+
+
+class Like(models.Model):
+    liked_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    blog = models.ForeignKey(BlogPost, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("liked_by", "blog")
+
+    def __str__(self):
+        return f"{self.blog} Liked By {self.liked_by}"
+
+
+class Comment(models.Model):
+    comment = models.TextField(max_length=500, blank=True)
+    commented_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    parent_comment = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="replies"
+    )
+    blog = models.ForeignKey(BlogPost, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.commented_by} commented on {self.blog}"

@@ -1,11 +1,75 @@
-from .models import BlogPost, CustomUser
-from rest_framework import serializers
+from .models import BlogPost, CustomUser, Like, Comment
+from rest_framework import fields, serializers
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    commented_by_name = serializers.CharField(
+        source="commented_by.username", read_only=True
+    )
+    replies = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = [
+            "id",
+            "comment",
+            "commented_by",
+            "commented_by_name",
+            "created_at",
+            "replies",
+        ]
+
+    def get_replies(self, obj):
+        if obj.replies.exists():
+            return CommentSerializer(obj.replies.all(), many=True).data
+        return []
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    liked_by_name = serializers.CharField(source="liked_by.username", read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ["id", "liked_by", "liked_by_name", "created_at"]
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source="author.username", read_only=True)
+    likes = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
+    like_count = serializers.SerializerMethodField()
+    comment_count = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogPost
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "content",
+            "created_at",
+            "updated_at",
+            "author",
+            "author_name",
+            "likes",
+            "comments",
+            "like_count",
+            "comment_count",
+        ]
+
+    def get_likes(self, obj):
+        return LikeSerializer(obj.like_set.all(), many=True).data
+
+    def get_comments(self, obj):
+        # Only get top-level comments (no parent)
+        top_comments = obj.comment_set.filter(parent_comment=None)
+        return CommentSerializer(top_comments, many=True).data
+
+    def get_like_count(self, obj):
+        return obj.like_set.count()
+
+    def get_comment_count(self, obj):
+        return obj.comment_set.count()
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -18,7 +82,6 @@ class UserCreateSerailizer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["username", "email", "password"]
-
 
     def create(self, validated_data):
         user = CustomUser(

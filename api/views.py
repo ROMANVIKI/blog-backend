@@ -8,7 +8,13 @@ from rest_framework.generics import (
     RetrieveAPIView,
 )
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import CustomUserSerializer, BlogPostSerializer, UserCreateSerailizer
+from .serializers import (
+    CustomUserSerializer,
+    BlogPostSerializer,
+    UserCreateSerailizer,
+    LikeSerializer,
+    CommentSerializer,
+)
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
