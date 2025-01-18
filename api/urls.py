@@ -13,4 +13,10 @@ urlpatterns = [
     path(
         "check-username/", views.RetrieveUserNameView.as_view(), name="check-username"
     ),
+    path("create-comment/", views.CommentCreateView.as_view(), name="create-comment"),
+    path("save-blog/", views.SavedBlogCreateView.as_view(), name="save-blog"),
+    path(
+        "list-saved-blogs/", views.SavedBlogListView.as_view(), name="list-saved-blogs"
+    ),
+    path("edit-user/", views.UpdateUserAPIView.as_view(), name="edit-user"),
 ]

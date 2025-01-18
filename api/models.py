@@ -117,3 +117,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.commented_by} commented on {self.blog}"
+
+
+class SavedBlog(models.Model):
+    saved_blog = models.ForeignKey(BlogPost, on_delete=models.CASCADE)
+    saved_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.saved_blog} named blog saved by {self.saved_by}"

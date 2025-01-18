@@ -1,19 +1,23 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from rest_framework.views import APIView, Response
-from .models import CustomUser, BlogPost, BlgoDraft
+from .models import CustomUser, BlogPost, BlgoDraft, Comment, SavedBlog
 from rest_framework.generics import (
     CreateAPIView,
     ListCreateAPIView,
     ListAPIView,
     RetrieveAPIView,
+    UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .serializers import (
     CustomUserSerializer,
     BlogPostSerializer,
+    SavedBlogSerializer,
     UserCreateSerailizer,
     LikeSerializer,
     CommentSerializer,
+    SavedBlogSerializer,
 )
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.views.decorators.csrf import csrf_exempt
@@ -83,3 +87,30 @@ class RetrieveUserNameView(APIView):
             )
         exists = CustomUser.objects.filter(username=username).exists()
         return Response({"exists": exists}, status=HTTP_200_OK)
+
+
+class CommentCreateView(CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        serializer.save(commented_by=self.request.user)
+
+
+class SavedBlogCreateView(CreateAPIView):
+    queryset = SavedBlog.objects.all()
+    serializer_class = SavedBlogSerializer
+    permission_classes = [AllowAny]
+
+
+class SavedBlogListView(ListAPIView):
+    queryset = SavedBlog.objects.all()
+    serializer_class = SavedBlogSerializer
+    permission_classes = [AllowAny]
+
+
+class UpdateUserAPIView(UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated]

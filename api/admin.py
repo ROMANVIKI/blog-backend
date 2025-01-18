@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
-from .models import CustomUser, BlogPost, Like, Comment
+from .models import CustomUser, BlogPost, Like, Comment, SavedBlog
 
 
 class UserCreationForm(forms.ModelForm):
@@ -53,10 +53,10 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ["email", "is_admin"]
+    list_display = ["username", "email", "is_admin", "avatar", "bio"]
     list_filter = ["is_admin"]
     fieldsets = [
-        (None, {"fields": ["email", "password"]}),
+        (None, {"fields": ["email", "username", "avatar", "bio", "password"]}),
         ("Permissions", {"fields": ["is_admin"]}),
     ]
     add_fieldsets = [
@@ -79,3 +79,4 @@ admin.site.unregister(Group)
 admin.site.register(BlogPost)
 admin.site.register(Like)
 admin.site.register(Comment)
+admin.site.register(SavedBlog)

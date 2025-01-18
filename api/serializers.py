@@ -1,4 +1,4 @@
-from .models import BlogPost, CustomUser, Like, Comment
+from .models import BlogPost, CustomUser, Like, Comment, SavedBlog
 from rest_framework import fields, serializers
 
 
@@ -12,6 +12,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             "id",
+            "blog_id",
             "comment",
             "commented_by",
             "commented_by_name",
@@ -31,6 +32,14 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ["id", "liked_by", "liked_by_name", "created_at"]
+
+
+class SavedBlogSerializer(serializers.ModelSerializer):
+    saved_by_name = serializers.CharField(source="saved_by.username", read_only=True)
+
+    class Meta:
+        model = SavedBlog
+        fields = ["id", "saved_by", "saved_by_name", "saved_blog", "created_at"]
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
@@ -75,7 +84,16 @@ class BlogPostSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "email"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "avatar",
+            "bio",
+            "created",
+        ]
 
 
 class UserCreateSerailizer(serializers.ModelSerializer):
