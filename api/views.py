@@ -24,6 +24,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
+from rest_framework import status
+from api import serializers
 
 # Create your views here.
 
@@ -53,9 +55,13 @@ class BlogListView(ListAPIView):
 
 
 class RetrieveUserView(RetrieveAPIView):
-    queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RetrieveBlogView(RetrieveAPIView):
@@ -92,10 +98,25 @@ class RetrieveUserNameView(APIView):
 class CommentCreateView(CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(commented_by=self.request.user)
+        print("Request Data: ", self.request.data)
+        print("Authenticated User:", self.request.user)
+        blog_id = self.request.data.get("blog")
+        comment_text = self.request.data.get("comment")
+
+        if not blog_id or not comment_text:
+            raise ValidationError(
+                {"error": "Both blog ID and comment text are required"}
+            )
+
+        try:
+            blog = BlogPost.objects.get(id=blog_id)
+
+        except Blog.DoesNotExist:
+            raise ValidationError({"error": "Blog not found"})
+        serializer.save(commented_by=self.request.user, blog=blog)
 
 
 class SavedBlogCreateView(CreateAPIView):
@@ -114,3 +135,4 @@ class UpdateUserAPIView(UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = "id"

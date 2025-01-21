@@ -7,7 +7,7 @@ urlpatterns = [
     path("create-blog/", views.BlogCreateView.as_view(), name="create-blog"),
     path("users/", views.UserListView.as_view(), name="users"),
     path("blogs/", views.BlogListView.as_view(), name="blogs"),
-    path("user/<int:pk>/", views.RetrieveUserView.as_view(), name="user"),
+    path("user/", views.RetrieveUserView.as_view(), name="user"),
     path("blog/<str:slug>/", views.RetrieveBlogView.as_view(), name="blog"),
     path("check-email/", views.RetrieveEmailView.as_view(), name="check-email"),
     path(
@@ -18,5 +18,5 @@ urlpatterns = [
     path(
         "list-saved-blogs/", views.SavedBlogListView.as_view(), name="list-saved-blogs"
     ),
-    path("edit-user/", views.UpdateUserAPIView.as_view(), name="edit-user"),
+    path("edit-user/<int:id>/", views.UpdateUserAPIView.as_view(), name="edit-user"),
 ]

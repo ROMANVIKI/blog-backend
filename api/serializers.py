@@ -12,7 +12,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             "id",
-            "blog_id",
+            "blog",
             "comment",
             "commented_by",
             "commented_by_name",
@@ -44,6 +44,7 @@ class SavedBlogSerializer(serializers.ModelSerializer):
 
 class BlogPostSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source="author.username", read_only=True)
+    author_avatar = serializers.ImageField(source="author.avatar", read_only=True)
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
@@ -60,6 +61,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
             "updated_at",
             "author",
             "author_name",
+            "author_avatar",
             "likes",
             "comments",
             "like_count",
