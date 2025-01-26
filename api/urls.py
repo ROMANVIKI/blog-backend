@@ -15,8 +15,7 @@ urlpatterns = [
     ),
     path("create-comment/", views.CommentCreateView.as_view(), name="create-comment"),
     path("save-blog/", views.SavedBlogCreateView.as_view(), name="save-blog"),
-    path(
-        "list-saved-blogs/", views.SavedBlogListView.as_view(), name="list-saved-blogs"
-    ),
+    path("saved-blogs/", views.SavedBlogListView.as_view(), name="saved-blogs"),
     path("edit-user/<int:id>/", views.UpdateUserAPIView.as_view(), name="edit-user"),
+    path("like/", views.CreateLikeAPIView.as_view(), name="like"),
 ]

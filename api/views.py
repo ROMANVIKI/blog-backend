@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from rest_framework.views import APIView, Response
-from .models import CustomUser, BlogPost, BlgoDraft, Comment, SavedBlog
+from .models import CustomUser, BlogPost, BlgoDraft, Comment, Like, SavedBlog
 from rest_framework.generics import (
     CreateAPIView,
     ListCreateAPIView,
@@ -45,7 +45,7 @@ class BlogCreateView(CreateAPIView):
 class UserListView(ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
 
 class BlogListView(ListAPIView):
@@ -122,13 +122,18 @@ class CommentCreateView(CreateAPIView):
 class SavedBlogCreateView(CreateAPIView):
     queryset = SavedBlog.objects.all()
     serializer_class = SavedBlogSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 class SavedBlogListView(ListAPIView):
-    queryset = SavedBlog.objects.all()
+    # queryset = SavedBlog.objects.all()
     serializer_class = SavedBlogSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return SavedBlog.objects.filter(saved_by=user)
+
 
 
 class UpdateUserAPIView(UpdateAPIView):
@@ -136,3 +141,9 @@ class UpdateUserAPIView(UpdateAPIView):
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
+
+
+class CreateLikeAPIView(CreateAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = [IsAuthenticated]

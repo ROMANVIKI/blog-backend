@@ -31,15 +31,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ["id", "liked_by", "liked_by_name", "created_at"]
-
-
-class SavedBlogSerializer(serializers.ModelSerializer):
-    saved_by_name = serializers.CharField(source="saved_by.username", read_only=True)
-
-    class Meta:
-        model = SavedBlog
-        fields = ["id", "saved_by", "saved_by_name", "saved_blog", "created_at"]
+        fields = ["id", "liked_by", "blog", "liked_by_name", "created_at"]
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
@@ -81,6 +73,28 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     def get_comment_count(self, obj):
         return obj.comment_set.count()
+
+
+class SavedBlogSerializer(serializers.ModelSerializer):
+    saved_by_name = serializers.CharField(source="saved_by.username", read_only=True)
+    blog_title = serializers.CharField(source="saved_blog.title", read_only=True)
+    blog_created_at = serializers.CharField(
+        source="saved_blog.created_at", read_only=True
+    )
+    blog_author = serializers.CharField(source="saved_blog.author", read_only=True)
+
+    class Meta:
+        model = SavedBlog
+        fields = [
+            "id",
+            "saved_by",
+            "blog_title",
+            "blog_author",
+            "blog_created_at",
+            "saved_by_name",
+            "saved_blog",
+            "created_at",
+        ]
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

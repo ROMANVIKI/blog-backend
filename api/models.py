@@ -124,5 +124,8 @@ class SavedBlog(models.Model):
     saved_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ("saved_blog", "saved_by")
+
     def __str__(self):
         return f"{self.saved_blog} named blog saved by {self.saved_by}"
