@@ -41,6 +41,8 @@ class BlogPostSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogPost
@@ -58,6 +60,8 @@ class BlogPostSerializer(serializers.ModelSerializer):
             "comments",
             "like_count",
             "comment_count",
+            "is_liked",
+            "is_saved",
         ]
 
     def get_likes(self, obj):
@@ -73,6 +77,25 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     def get_comment_count(self, obj):
         return obj.comment_set.count()
+
+    def get_is_liked(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.like_set.filter(liked_by=request.user).exists()
+        # if not request:
+        #     return "request error"
+        return False
+
+    def get_is_saved(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return SavedBlog.objects.filter(
+                saved_by=request.user, saved_blog=obj
+            ).exists()
+        # if not request:
+        #    return "request error"
+
+        return False
 
 
 class SavedBlogSerializer(serializers.ModelSerializer):

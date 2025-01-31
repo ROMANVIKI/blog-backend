@@ -4,6 +4,7 @@ from rest_framework.views import APIView, Response
 from .models import CustomUser, BlogPost, BlgoDraft, Comment, Like, SavedBlog
 from rest_framework.generics import (
     CreateAPIView,
+    DestroyAPIView,
     ListCreateAPIView,
     ListAPIView,
     RetrieveAPIView,
@@ -39,7 +40,7 @@ class UserCreateView(CreateAPIView):
 class BlogCreateView(CreateAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 class UserListView(ListAPIView):
@@ -65,6 +66,18 @@ class RetrieveUserView(RetrieveAPIView):
 
 
 class RetrieveBlogView(RetrieveAPIView):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "slug"
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
+
+
+class RetrieveBlogViewForNewUser(RetrieveAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [AllowAny]
@@ -101,8 +114,8 @@ class CommentCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        print("Request Data: ", self.request.data)
-        print("Authenticated User:", self.request.user)
+        # print("Request Data: ", self.request.data)
+        # print("Authenticated User:", self.request.user)
         blog_id = self.request.data.get("blog")
         comment_text = self.request.data.get("comment")
 
@@ -135,7 +148,6 @@ class SavedBlogListView(ListAPIView):
         return SavedBlog.objects.filter(saved_by=user)
 
 
-
 class UpdateUserAPIView(UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
@@ -146,4 +158,32 @@ class UpdateUserAPIView(UpdateAPIView):
 class CreateLikeAPIView(CreateAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    permission_classes = [AllowAny]
+
+
+class DeleteLikeAPIView(DestroyAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+
+class DeleteBlogAPIView(DestroyAPIView):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+
+class DeleteCommentAPIView(DestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+
+class DeleteSavedBlogAPIView(DestroyAPIView):
+    queryset = SavedBlog.objects.all()
+    serializer_class = SavedBlogSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
