@@ -31,7 +31,6 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -183,7 +182,7 @@ PASSWORD_HASHERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://vblog-tan.vercel.app/",
+    "https://vblog-tan.vercel.app",
 ]
 
 # Allow sending cookies
