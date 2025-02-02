@@ -3,7 +3,7 @@ argon2-cffi-bindings==21.2.0
 asgiref==3.8.1
 cffi==1.17.1
 DateTime==5.5
-Django==5.1.4
+Django==5.1.5
 django-cors-headers==4.6.0
 django-storages==1.14.4
 djangorestframework==3.15.2
