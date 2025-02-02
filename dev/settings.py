@@ -25,13 +25,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = "django-insecure-3ciwx$_#$5x!-yn7*-=-(k)36_!1=7f$_d!xto*jm#9#!()*)+"
-#
-# # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-#
-# ALLOWED_HOSTS = []
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
@@ -189,6 +182,7 @@ PASSWORD_HASHERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://vblog-tan.vercel.app/",
 ]
 
 # Allow sending cookies
