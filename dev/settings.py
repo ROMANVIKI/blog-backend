@@ -179,7 +179,6 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
 
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://vblog-tan.vercel.app",
