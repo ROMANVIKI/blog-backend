@@ -187,3 +187,13 @@ class DeleteSavedBlogAPIView(DestroyAPIView):
     serializer_class = SavedBlogSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "id"
+
+
+class CurrentBlogListAPIView(ListAPIView):
+    # queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return BlogPost.objects.filter(author=user)

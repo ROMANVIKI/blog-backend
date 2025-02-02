@@ -24,11 +24,12 @@ urlpatterns = [
     path("edit-user/<int:id>/", views.UpdateUserAPIView.as_view(), name="edit-user"),
     path("like/", views.CreateLikeAPIView.as_view(), name="like"),
     path("dl-like/<int:id>/", views.DeleteLikeAPIView.as_view(), name="dl-like"),
-    path("dl-blog/", views.DeleteBlogAPIView.as_view(), name="dl-blog"),
+    path("dl-blog/<int:id>/", views.DeleteBlogAPIView.as_view(), name="dl-blog"),
     path("dl-comment/", views.DeleteCommentAPIView.as_view(), name="dl-blog"),
     path(
         "dl-saved-blog/<int:id>/",
         views.DeleteSavedBlogAPIView.as_view(),
         name="dl-saved-blog",
     ),
+    path("cu-blogs/", views.CurrentBlogListAPIView.as_view(), name="cu-blogs"),
 ]
