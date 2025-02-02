@@ -183,7 +183,13 @@ PASSWORD_HASHERS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://vblog-tan.vercel.app",
+    "https://vblog-8sqfuyz24-vikrams-projects-e22cf881.vercel.app",
 ]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://vblog-.*\.vercel\.app$",
+]
+
 
 # Allow sending cookies
 CORS_ALLOW_CREDENTIALS = True
