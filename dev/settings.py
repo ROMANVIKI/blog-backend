@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     # Middleware for whitenoise to serve staticfiles on dev server
@@ -179,17 +181,17 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "https://vblog-tan.vercel.app",
-#     "https://vblog-8sqfuyz24-vikrams-projects-e22cf881.vercel.app",
-# ]
-#
-# CORS_ALLOWED_ORIGIN_REGEXES = [
-#     r"^https://vblog-.*\.vercel\.app$",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://vblog-tan.vercel.app",
+    "https://vblog-8sqfuyz24-vikrams-projects-e22cf881.vercel.app",
+]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://vblog-.*\.vercel\.app$",
+]
+
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # Allow sending cookies
 CORS_ALLOW_CREDENTIALS = True
