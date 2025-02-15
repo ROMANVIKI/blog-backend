@@ -1,5 +1,7 @@
+from os import stat
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.utils.text import slugify
 from rest_framework.views import APIView, Response
 from .models import CustomUser, BlogPost, BlgoDraft, Comment, Like, SavedBlog
 from rest_framework.generics import (
@@ -18,7 +20,6 @@ from .serializers import (
     UserCreateSerailizer,
     LikeSerializer,
     CommentSerializer,
-    SavedBlogSerializer,
 )
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.views.decorators.csrf import csrf_exempt
@@ -27,6 +28,10 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from api import serializers
+
+from .mail_sender import send_email_to_all_users
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your views here.
 
@@ -197,3 +202,9 @@ class CurrentBlogListAPIView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return BlogPost.objects.filter(author=user)
+
+
+@receiver(post_save, sender=BlogPost)
+def send_email_on_blog_creation(sender, instance, created, **kwargs):
+    if created:
+        send_email_to_all_users(instance.title, instance.author.username, instance.id)
