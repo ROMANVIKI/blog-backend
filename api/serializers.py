@@ -1,4 +1,4 @@
-from .models import BlogPost, CustomUser, Like, Comment, SavedBlog
+from .models import BlogPost, CustomUser, Like, Comment, SavedBlog, SubscriptionMail
 from rest_framework import fields, serializers
 
 
@@ -148,3 +148,9 @@ class UserCreateSerailizer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class SubscribedEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubscriptionMail
+        fields = "__all__"

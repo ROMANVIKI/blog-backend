@@ -32,4 +32,9 @@ urlpatterns = [
         name="dl-saved-blog",
     ),
     path("cu-blogs/", views.CurrentBlogListAPIView.as_view(), name="cu-blogs"),
+    path(
+        "subscribe/",
+        views.CreateSubscriptionEmail.as_view(),
+        name="subscribe",
+    ),
 ]

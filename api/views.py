@@ -3,7 +3,15 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.utils.text import slugify
 from rest_framework.views import APIView, Response
-from .models import CustomUser, BlogPost, BlgoDraft, Comment, Like, SavedBlog
+from .models import (
+    CustomUser,
+    BlogPost,
+    BlgoDraft,
+    Comment,
+    Like,
+    SavedBlog,
+    SubscriptionMail,
+)
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -20,6 +28,7 @@ from .serializers import (
     UserCreateSerailizer,
     LikeSerializer,
     CommentSerializer,
+    SubscribedEmailSerializer,
 )
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.views.decorators.csrf import csrf_exempt
@@ -29,7 +38,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from api import serializers
 
-from .mail_sender import send_email_to_all_users
+from .mail_sender import send_email_to_all_users, send_subscription_email
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -208,3 +217,16 @@ class CurrentBlogListAPIView(ListAPIView):
 def send_email_on_blog_creation(sender, instance, created, **kwargs):
     if created:
         send_email_to_all_users(instance.title, instance.author.username, instance.id)
+
+
+@receiver(post_save, sender=SubscriptionMail)
+def send_subscribe_email(sender, instance, created, **kwargs):
+    if created:
+        email = instance.email
+        send_subscription_email(email)
+
+
+class CreateSubscriptionEmail(CreateAPIView):
+    queryset = SubscriptionMail.objects.all()
+    serializer_class = SubscribedEmailSerializer
+    permission_classes = [AllowAny]

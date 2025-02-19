@@ -106,6 +106,14 @@ class Like(models.Model):
         return f"{self.blog} Liked By {self.liked_by}"
 
 
+class SubscriptionMail(models.Model):
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.email} mail subscribed to the newsletter"
+
+
 class Comment(models.Model):
     comment = models.TextField(max_length=500, blank=True)
     commented_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
